@@ -1,15 +1,16 @@
 {
-    "name": "back/practica",
+    "name": "prueba/backend",
     "description": "primer proyecto con composer",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Back\\Practica\\": "src/"
+            "Prueba\\Backend\\": "app/"
         }
     },
     "authors": [
         {
-            "name": "danielMeza8"
+            "name": "DanielMeza8",
+            "email": "mezaromeroplantel14@gmail.com"
         }
     ],
     "minimum-stability": "dev",
