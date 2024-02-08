@@ -9,6 +9,8 @@
 
     // terminar CRUD 
 
+use PSpell\Config;
+
 use function PHPSTORM_META\elementType;
 
     require_once realpath('../../vendor/autoload.php');
@@ -54,18 +56,73 @@ use function PHPSTORM_META\elementType;
         }
 
 
-        public static function getAnimals(){
-            Conexion::obtenerConexion();
-            $animal = self::$conexion->query("SELECT * FROM animales");
-            while ($row = $animal->fetch()) {
-                echo $row['id']." ".$row['nombre']." ".$row['origen']."<br />\n";
+        // public static function getAnimals(){
+        //     Conexion::obtenerConexion();
+        //     $animal = self::$conexion->query("SELECT * FROM animales");
+        //     while ($row = $animal->fetch()) {
+        //         echo $row['id']." ".$row['nombre']." ".$row['origen']."<br />\n";
                 
-                Conexion::cerrarConexion();
-            }
+        //         Conexion::cerrarConexion();
+        //     }
             
+        // }
+
+        public static function consulta(){
+            $consulta = Conexion::obtenerConexion()->prepare("SELECT * FROM animales");
+            if($consulta->execute()) {
+                $data = $consulta->fetchAll(PDO::FETCH_ASSOC);
+                echo print_r($data);
+                echo "consulta completada<br/>";
+            }else {
+                echo "error al consultar";
+            }
         }
+
+        public static function insert($nombre, $origen){
+            $nom = $nombre;
+            $pais = $origen;
+            $consulta = "INSERT INTO animales(nombre, origen) VALUES (:nom,:pais)";
+            $conexion = Conexion::obtenerConexion()->prepare($consulta);
+            if (!$conexion->execute(["nom"=>$nom, ":pais"=>$pais])) {
+                echo "Error al insertar el dato";
+            }else {
+                echo "registro creado correctamente<br/>";
+                Conexion::consulta();
+                
+            }
+        }
+
+        public static function update($id,$nombre, $origen){
+
+            $consulta = "UPDATE animales SET nombre=:nombre, origen=:origen WHERE id=:id";
+            $conexion = Conexion::obtenerConexion()->prepare($consulta);
+            if (!$conexion->execute([":nombre"=>$nombre, ":origen"=>$origen, ":id"=>$id])) {
+                echo "Error al insertar el dato";
+            }else {
+                echo "registro modificado correctamente<br/>";
+                Conexion::consulta();
+            }
+        }
+
+        public static function delete($id){
+                $consulta = "DELETE FROM animales
+                    WHERE id=:id";
+                $conexion = Conexion::obtenerConexion()->prepare($consulta);
+                
+                if(!$conexion->execute([":id" => $id])) {
+                    echo "error al eliminar el registro";
+                } else {
+                    echo "registro elimando correctamente<br/>";
+                    Conexion::consulta();
+                }
+        }
+        
     }
 
-    Conexion::getAnimals();
+
+    Conexion::consulta();
+    //Conexion::insert("Bufalo", "india");
+    Conexion::update(5,"perro", "mexico");
+    //Conexion::delete(4);
 
 ?>
