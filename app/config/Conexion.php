@@ -1,4 +1,6 @@
 <?php 
+
+    
     // Se ocupa la POO en el backend para generar más 
     // el enacapsulamieto se refiere a volverlo privado que solo pertenece a esa clase
 
@@ -9,12 +11,13 @@
 
     // terminar CRUD 
 
-use PSpell\Config;
 
-use function PHPSTORM_META\elementType;
-
-    require_once realpath('../../vendor/autoload.php');
-    $dotenv = Dotenv\Dotenv::createImmutable('../../');
+    namespace config;
+    use Dotenv\Dotenv;
+    use PDO;
+    use PDOException;
+    
+    $dotenv = Dotenv::createImmutable('./');
     $dotenv->load();
     // asi se crea un avariable constante define ( nombre d el avariable, de donde lo extrayemos la variable);
     define('SERVIDOR', $_ENV['HOST']);
@@ -28,7 +31,7 @@ use function PHPSTORM_META\elementType;
 
         private static $conexion;
 
-        public static function abrirConexion() {
+        private static function abrirConexion() {
             // isset s eutiliza para saber si una variable sta definida o no es nula
             // self se utiliza para invocar a variables estaticas
             if (!isset(self::$conexion)) {
@@ -67,62 +70,6 @@ use function PHPSTORM_META\elementType;
             
         // }
 
-        public static function consulta(){
-            $consulta = Conexion::obtenerConexion()->prepare("SELECT * FROM animales");
-            if($consulta->execute()) {
-                $data = $consulta->fetchAll(PDO::FETCH_ASSOC);
-                echo print_r($data);
-                echo "consulta completada<br/>";
-            }else {
-                echo "error al consultar";
-            }
         }
-
-        public static function insert($nombre, $origen){
-            $nom = $nombre;
-            $pais = $origen;
-            $consulta = "INSERT INTO animales(nombre, origen) VALUES (:nom,:pais)";
-            $conexion = Conexion::obtenerConexion()->prepare($consulta);
-            if (!$conexion->execute(["nom"=>$nom, ":pais"=>$pais])) {
-                echo "Error al insertar el dato";
-            }else {
-                echo "registro creado correctamente<br/>";
-                Conexion::consulta();
-                
-            }
-        }
-
-        public static function update($id,$nombre, $origen){
-
-            $consulta = "UPDATE animales SET nombre=:nombre, origen=:origen WHERE id=:id";
-            $conexion = Conexion::obtenerConexion()->prepare($consulta);
-            if (!$conexion->execute([":nombre"=>$nombre, ":origen"=>$origen, ":id"=>$id])) {
-                echo "Error al insertar el dato";
-            }else {
-                echo "registro modificado correctamente<br/>";
-                Conexion::consulta();
-            }
-        }
-
-        public static function delete($id){
-                $consulta = "DELETE FROM animales
-                    WHERE id=:id";
-                $conexion = Conexion::obtenerConexion()->prepare($consulta);
-                
-                if(!$conexion->execute([":id" => $id])) {
-                    echo "error al eliminar el registro";
-                } else {
-                    echo "registro elimando correctamente<br/>";
-                    Conexion::consulta();
-                }
-        }
-        
-    }
-
-
-    Conexion::consulta();
-    //Conexion::insert("Bufalo", "india");
-    Conexion::update(5,"perro", "mexico");
-    //Conexion::delete(4);
 
 ?>
