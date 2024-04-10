@@ -55,7 +55,25 @@
                 echo json_encode("Error al insertar");                
             }
         }
+/**
+ * / $columnas = implode(", ", array_keys($parametros));
+                // echo print_r($columnas);
+            $datos = ":" . implode(", :", array_keys($parametros));
+            // echo print_r($datos);
+            $idBD = implode(array_keys($id));
+            // echo print_r($idBD);
+            $idUSER = implode(array_keys($id));
+            echo print_r($idUSER);
 
+            $consulta = "UPDATE $tabla SET $columnas=$datos WHERE $idBD=$idUSER";
+            $conexion = Conexion::obtenerConexion()->prepare($consulta);
+            if ($conexion->execute($parametros)) {
+                echo json_encode([1, "Actualizacion correcta"]);
+                //Conexion::consulta();
+            }else {
+                echo json_encode("Error al insertar");                
+            }
+ */
         public static function updateJaku($datos){
             $datosActuales = self::consultaID(['id'=>$datos['id']]);
             $datosActuales['nombre'] = array_key_exists('nombre', $datos) ? $datos['nombre']:$datosActuales['nombre'];
@@ -111,6 +129,8 @@
                     //Conexion::consulta();
                 }
         }
+
+        
         
     }
 
